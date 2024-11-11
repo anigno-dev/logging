@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "formatters": {
+    "main_format": {
+      "class": "logging.Formatter",
+      "format": "$%(asctime)s|%(threadName)s|%(levelname)s|%(module)s,%(funcName)s|%(message)s"
+    }
+  },
+  "handlers": {
+    "null": {
+      "class": "logging.NullHandler"
+    },
+    "file_system_handler": {
+      "class": "logging.handlers.RotatingFileHandler",
+      "path": "d:/dev/logs/log",
+      "prefix": "log.txt",
+      "mode": "a",
+      "max_bytes": 2097152,
+      "backup_count": 1000,
+      "formatter": "main_format"
+    },
+    "stream_handler": {
+      "class": "logging.StreamHandler",
+      "formatter": "main_format",
+      "stream": "ext://sys.stdout"
+    },
+    "datagram_handler": {
+      "class": "logging.handlers.DatagramHandler",
+      "host": "localhost",
+      "port": 9999,
+      "level": "DEBUG"
+    }
+  },
+  "loggers": {
+    "file_system_logger": {
+      "level": "DEBUG",
+      "handlers": [
+        "file_system_handler",
+        "stream_handler"
+      ]
+    },
+    "stream_only_logger": {
+      "level": "DEBUG",
+      "handlers": [
+        "stream_handler"
+      ]
+    },
+    "datagram_logger": {
+      "handlers": [
+        "datagram_handler",
+        "stream_handler"
+      ],
+      "level": "DEBUG"
+    }
+  }
+}

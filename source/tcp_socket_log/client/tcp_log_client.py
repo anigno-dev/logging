@@ -1,47 +1,51 @@
 import logging
-import logging.handlers
+import pickle
 import socket
+import struct
 import time
 
-from source.tcp_socket_log.common.constants import Constants
+class PickleSocketHandler(logging.Handler):
+    def __init__(self, host, port):
+        super().__init__()
+        self.host = host
+        self.port = port
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket.connect((self.host, self.port))
 
-class TcpLogeerClient:
-    def __init__(self, name, server_host="localhost", server_port=logging.handlers.DEFAULT_TCP_LOGGING_PORT):
-        """client for sending log messages to logger server"""
-        self.logger = logging.getLogger(name)
-        self.logger.setLevel(logging.DEBUG)
-        self.socket_handler = logging.handlers.SocketHandler(server_host, server_port)
-        formatter = logging.Formatter(Constants.FORMATTER_STRING)
-        self.socket_handler.setFormatter(formatter)
-        self.logger.addHandler(self.socket_handler)
+    def emit(self, record):
+        try:
+            # Pickle the record to bytes
+            data = pickle.dumps(record.__dict__)
+            length_prefix = struct.pack('>I', len(data))
 
-    def log_debug(self, message):
-        self.logger.debug(message)
+            # Debug: Print the log record being sent
+            print("Sending log record:", record)
 
-    def log_info(self, message):
-        self.logger.info(message)
-
-    def log_warning(self, message):
-        self.logger.warning(message)
-
-    def log_error(self, message):
-        self.logger.error(message)
+            # Send the length and the data
+            self.socket.sendall(length_prefix + data)
+        except Exception as e:
+            print(f"Error sending log record: {e}")
 
     def close(self):
-        """Closes the logging handler to clean up resources."""
-        self.logger.removeHandler(self.socket_handler)
-        self.socket_handler.close()
+        self.socket.close()
+        super().close()
 
-# Example Usage
-if __name__ == "__main__":
-    # Replace 'your-central-server-ip' with the actual IP address of the logging server
-    central_logger = TcpLogeerClient(name="ClientLogger")
+def setup_network_logger(server_host, server_port, logger_name='NetworkLogger'):
+    logger = logging.getLogger(logger_name)
+    logger.setLevel(logging.DEBUG)
 
-    # Log some example messages
-    for _ in range(4):
-        central_logger.log_info("This is an info message.")
-        central_logger.log_warning("This is a warning message.")
-        central_logger.log_error("This is an error message.")
-        time.sleep(0.5)
-    # Close the logger when done
-    central_logger.close()
+    # Use PickleSocketHandler
+    socket_handler = PickleSocketHandler(server_host, server_port)
+    logger.addHandler(socket_handler)
+
+    return logger
+
+# Example usage
+logger = setup_network_logger('127.0.0.1', 9000)
+
+for a in range(10):
+    logger.info("Test log message from client.")
+    logger.warning("Test log message from client.")
+    logger.debug("Test log message from client.")
+    logger.error("Test log message from client.")
+    time.sleep(1)

@@ -1,33 +1,66 @@
 import logging
-import os.path
-import logging.handlers
-from source.tcp_socket_log.common.constants import Constants
-from source.tcp_socket_log.server.log_record_tcp_socket_receiver import LogRecordTcpSocketReceiver
-from logging.handlers import RotatingFileHandler
-class LoggingServer:
-    """serve as receiver for all log messages,
-    produce a log file from all received logs"""
+import os
+import socketserver
+import pickle
+import struct
+import sys
+import threading
+import time
 
-    def __init__(self, logs_path: str, host: str = "localhost", port: int = logging.handlers.DEFAULT_TCP_LOGGING_PORT):
-        self.logs_path = logs_path
-        self.host = host
-        self.port = port
+class LogRecordStreamHandler(socketserver.StreamRequestHandler):
+    def handle(self):
+        try:
+            while True:
+                # Read the message length (4 bytes)
+                length_prefix = self.rfile.read(4)
+                if not length_prefix:
+                    break  # Connection closed or empty data
 
-    def start(self):
-        """start the logging server"""
-        os.makedirs(self.logs_path, exist_ok=True)
-        # setup file logging handler
-        logging_formatter = logging.Formatter(Constants.FORMATTER_STRING)
-        base_log_file = os.path.join(self.logs_path, "central_log.log")
-        # TODO: consider rolling file handler or DB usage
-        handler = logging.FileHandler(base_log_file)
-        a=logging.handlers.RotatingFileHandler
-        handler.formatter = logging_formatter
-        tcp_server = LogRecordTcpSocketReceiver(self.host, self.port, handler)
-        print("Starting log server...")
-        tcp_server.serve_forever()
+                # Unpack the length and read the actual log record data
+                record_length = struct.unpack('>I', length_prefix)[0]
+                record_data = self.rfile.read(record_length)
 
-if __name__ == "__main__":
-    server = LoggingServer(logs_path="d:\\temp\\logs")
-    # TODO: values should be read from config file
-    server.start()
+                # Deserialize the record
+                log_record = pickle.loads(record_data)
+                record = logging.makeLogRecord(log_record)
+
+                # Debug: Print the received log record
+                print("Received log record:", record)
+
+                # Log the record to the server's logger
+                self.server.logger.handle(record)
+        except Exception as e:
+            print(f"Error handling log record: {e}")
+
+class LogRecordSocketReceiver(socketserver.ThreadingTCPServer):
+    allow_reuse_address = True
+
+    def __init__(self, host, port, handler, logger):
+        super().__init__((host, port), handler)
+        self.logger = logger
+
+def exit_server():
+    time.sleep(5)
+    # os._exit(0)
+
+def start_logging_server(host='0.0.0.0', port=9000, log_file='server_logs.log'):
+    logger = logging.getLogger('LogCollector')
+    logger.setLevel(logging.DEBUG)
+
+    handler = logging.FileHandler(log_file)
+    handler.setFormatter(logging.Formatter('%(asctime)s %(name)s %(levelname)s: %(message)s'))
+    logger.addHandler(handler)
+
+    server = LogRecordSocketReceiver(host, port, LogRecordStreamHandler, logger)
+    print(f"Starting log server on {host}:{port}")
+    try:
+        threading.Thread(target=exit_server).start()
+        server.serve_forever()
+    except KeyboardInterrupt:
+        print("Server shutting down.")
+    finally:
+        handler.close()
+        print("Log server closed.")
+
+if __name__ == '__main__':
+    start_logging_server()

@@ -14,7 +14,8 @@ class HtmlLoggerInitializer:
     logger is accessible with:\n
     logger = logging.getLogger(logger_name)"""
 
-    def __init__(self, logger_name, logs_path="logs", max_bytes=1024 * 1024 * 2, ):
+    @staticmethod
+    def create(logger_name, logs_path="logs", max_bytes=1024 * 1024 * 2, ):
         # create the logger
         logger = logging.getLogger(logger_name)
         logger.setLevel(logging.DEBUG)
@@ -36,7 +37,7 @@ class HtmlLoggerInitializer:
 if __name__ == '__main__':
     class ExampleLogging:
         def run_some_function_example(self):
-            HtmlLoggerInitializer("my_logger", "logs", 1024 * 1024 *2)
+            HtmlLoggerInitializer.create("my_logger", "logs", 1024 * 1024 * 2)
             my_logger = logging.getLogger("my_logger")
             for a in range(4000):
                 my_logger.debug(f"debug message {a} " * 2)

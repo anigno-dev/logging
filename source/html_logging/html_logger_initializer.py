@@ -40,8 +40,8 @@ if __name__ == '__main__':
             my_logger = logging.getLogger("my_logger")
             for a in range(400):
                 my_logger.debug(f"debug message {a} " * 2)
-                # my_logger.info(f"info message {a} " * 2)
-                # my_logger.warning(f"warning message {a} " * 2)
-                # my_logger.error(f"error message {a} " * 2)
+                my_logger.info(f"info message {a} " * 22)
+                my_logger.warning(f"warning message {a} " * 6)
+                my_logger.error(f"error message {a} " * 8)
 
     ExampleLogging().run()

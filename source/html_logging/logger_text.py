@@ -1,6 +1,6 @@
 FORMATTER_TEXT = "%(asctime)s | %(threadName)s | %(levelname)s | %(module)s | %(funcName)s | %(message)s"
-FORMATTER_TEXT_HTML = """<tr class=%(levelname)s><td>%(asctime)s</td><td>%(threadName)s</td><td>%(levelname)s
-</td><td>%(module)s</td><td>%(funcName)s</td><td>%(message)s</td></tr>"""
+FORMATTER_TEXT_HTML = ("<tr class=%(levelname)s><td>%(asctime)s</td><td>%(threadName)s</td><td>%(levelname)s</td>"
+                       "<td>%(module)s</td><td>%(funcName)s</td><td>%(message)s</td></tr>")
 HTML_PRETEXT = """
 <!DOCTYPE html>
 <html lang="en">
@@ -18,30 +18,24 @@ HTML_PRETEXT = """
             border-collapse: collapse;
         }
         th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
+            border: 1px solid #555;
+            padding: 4px;
             text-align: left;
         }
         th {
             background-color: #f4f4f4;
         }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        tr:hover {
-            background-color: #f1f1f1;
-        }
        /* CSS Classes for coloring rows */
-        .debug {
+        .DEBUG {
             background-color: #d1e7dd; /* Light green for debug */
         }
-        .info {
+        .INFO {
             background-color: #cff4fc; /* Light blue for info */
         }
-        .warning {
+        .WARNING {
             background-color: #fff3cd; /* Light yellow for warning */
         }
-        .error {
+        .ERROR {
             background-color: #f8d7da; /* Light red for error */
         }
     </style>
@@ -50,7 +44,7 @@ HTML_PRETEXT = """
     <table>
         <thead>
             <tr>
-                <th>Timestamp</th>
+                <th width=180>Timestamp</th>
                 <th>Thread</th>
                 <th>Level</th>
                 <th>Module</th>

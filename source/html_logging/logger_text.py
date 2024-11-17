@@ -1,6 +1,6 @@
 FORMATTER_TEXT = "%(asctime)s | %(threadName)s | %(levelname)s | %(module)s | %(funcName)s | %(message)s"
-FORMATTER_TEXT_HTML = ("<tr class=%(levelname)s><td>%(asctime)s</td><td>%(threadName)s</td><td>%(levelname)s</td>"
-                       "<td>%(module)s</td><td>%(funcName)s</td><td>%(message)s</td></tr>")
+FORMATTER_TEXT_HTML = """<tr class=%(levelname)s><td>%(asctime)s</td><td>%(threadName)s</td><td>%(levelname)s</td>
+                       <td>%(module)s</td><td>%(funcName)s</td><td>%(message)s</td></tr>"""
 HTML_PRETEXT = """
 <!DOCTYPE html>
 <html lang="en">

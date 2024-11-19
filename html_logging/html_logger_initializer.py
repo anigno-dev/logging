@@ -4,7 +4,6 @@ import sys
 from datetime import datetime
 from logging import StreamHandler
 from os import path
-
 from html_Rolling_Appender import HtmlRollingAppender
 from logger_text import FORMATTER_TEXT, FORMATTER_TEXT_HTML
 
@@ -15,7 +14,7 @@ class HtmlLoggerInitializer:
     logger = logging.getLogger(logger_name)"""
 
     @staticmethod
-    def create(logger_name, logs_path="logs", max_bytes=1024 * 1024 * 2, ):
+    def create(logger_name, logs_path="logs", max_bytes=1024 * 1024 * 2):
         # create the logger
         logger = logging.getLogger(logger_name)
         logger.setLevel(logging.DEBUG)
@@ -37,7 +36,7 @@ class HtmlLoggerInitializer:
 if __name__ == '__main__':
     class ExampleLogging:
         def run_some_function_example(self):
-            HtmlLoggerInitializer.create("my_logger", "logs", 1024 * 1024 * 2)
+            HtmlLoggerInitializer.create("my_logger", "c:\\temp\\logs", 1024 * 1024 * 2)
             my_logger = logging.getLogger("my_logger")
             for a in range(4000):
                 my_logger.debug(f"debug message {a} " * 2)

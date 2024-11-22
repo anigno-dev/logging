@@ -4,8 +4,8 @@ import sys
 from datetime import datetime
 from logging import StreamHandler
 from os import path
-from html_Rolling_Appender import HtmlRollingAppender
-from logger_text import FORMATTER_TEXT, FORMATTER_TEXT_HTML
+from logging_lib.html_logging.html_Rolling_Appender import HtmlRollingAppender
+from logging_lib.html_logging.logger_text import FORMATTER_TEXT, FORMATTER_TEXT_HTML
 
 class HtmlLoggerInitializer:
     """initialize a html rolling logger with given logger name\n

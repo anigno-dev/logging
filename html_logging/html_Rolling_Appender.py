@@ -2,7 +2,7 @@ import os
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
-from logger_text import HTML_PRETEXT
+from logging_lib.html_logging.logger_text import HTML_PRETEXT
 
 class HtmlRollingAppender(RotatingFileHandler):
     """perform log file rolling and handling HTML pre text, scripts and tags.\n

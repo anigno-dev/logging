@@ -25,7 +25,7 @@ class HtmlLoggerInitializer:
         base_file_name = path.join(logs_path, f"log_[{hostname}]_[{time_string}]")
         # initialize handlers and formatter
         html_handler = HtmlRollingAppender(base_file_name, max_bytes=max_bytes, backup_count=1000)
-        stream_handler = StreamHandler(stream=sys.stderr)
+        stream_handler = StreamHandler(stream=sys.stdout)
         formatter_html = logging.Formatter(FORMATTER_TEXT_HTML)
         formatter_stream = logging.Formatter(FORMATTER_TEXT)
         html_handler.setFormatter(formatter_html)

@@ -7,10 +7,12 @@ from logging_lib.html_logging.logger_text import HTML_PRETEXT
 class HtmlRollingAppender(RotatingFileHandler):
     """perform log file rolling and handling HTML pre text, scripts and tags.\n
     log files extension is .html, to allow any browser to display the log file"""
-    def __init__(self, logs_path, max_bytes, backup_count, encoding='utf-8', delay=False):
+
+    def __init__(self, logs_path: str, log_file_prefix="log", max_bytes: int = 1024 * 1024 * 2, backup_count=999,
+                 encoding='utf-8', delay=False):
         # filename = os.path.basename(logs_path)
         self.emit_prefix = True
-        filename = "log"
+        filename = log_file_prefix
         self.next_file_ext: int = 0
         Path(logs_path).mkdir(parents=True, exist_ok=True)
         base_filename = os.path.join(logs_path, filename)

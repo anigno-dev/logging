@@ -1,7 +1,7 @@
 import logging
 import sys
 
-from simple_logging.severity_padding_formatter import SeverityPaddingFormatter
+from severity_padding_formatter import SeverityPaddingFormatter
 
 class SimpleLogger:
     def __init__(self, name, level):

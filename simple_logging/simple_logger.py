@@ -1,6 +1,8 @@
 import logging
 import sys
 
+from simple_logging.severity_padding_formatter import SeverityPaddingFormatter
+
 class SimpleLogger:
     def __init__(self, name, level):
         logger = logging.getLogger(name)
@@ -9,7 +11,7 @@ class SimpleLogger:
             logger.setLevel(level)
             console_handler = logging.StreamHandler(sys.stdout)
             console_handler.setLevel(level)
-            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            formatter = SeverityPaddingFormatter('%(asctime)s|%(levelname)s|%(funcName)s|%(lineno)d|%(message)s')
             console_handler.setFormatter(formatter)
             logger.addHandler(console_handler)
 

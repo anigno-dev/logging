@@ -1,6 +1,6 @@
 import logging
 
-from simple_logger import SimpleLogger
+from simple_logging.simple_logger import SimpleLogger
 
 if __name__ == "__main__":
     SimpleLogger("MyLogger", logging.DEBUG)
